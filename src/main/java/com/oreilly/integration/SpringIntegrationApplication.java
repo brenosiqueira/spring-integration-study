@@ -1,17 +1,18 @@
 package com.oreilly.integration;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Future;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
-import org.springframework.integration.channel.DirectChannel;
-import org.springframework.integration.core.MessagingTemplate;
-import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 
 @SpringBootApplication
 @Configuration
@@ -19,12 +20,7 @@ import org.springframework.messaging.Message;
 public class SpringIntegrationApplication implements ApplicationRunner {
 
 	@Autowired
-	@Qualifier("inputChannel")
-	DirectChannel inputChannel;
-
-//	@Autowired
-//	@Qualifier("outputChannel")
-//	DirectChannel outputChannel;
+	PrinterGateway gateway;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringIntegrationApplication.class, args);
@@ -32,30 +28,21 @@ public class SpringIntegrationApplication implements ApplicationRunner {
 
 	@Override
 	public void run(ApplicationArguments arg0) throws Exception {
+
+		// QueueChannel
+		List<Future<Message<String>>> futures = new ArrayList<>();
+
+		for (int x = 0; x < 10; x++) {
+			Message<String> message = MessageBuilder
+					.withPayload("Printing message payload for " + x)
+					.setHeader("messageNumber", x).build();
+			System.out.println("Sending message " + x);
+			futures.add(this.gateway.print(message));
+
+		}
 		
-//		Map<String, Object> map = new HashMap<String, Object>();
-//		map.put("key", "value");
-//		MessageHeaders header = new MessageHeaders(map);
-//		
-//		Message<String> message = new GenericMessage<String>("Hello word!!!!!", header);
-		
-		// inputChannel.subscribe((m)->printPayload(m));
-		
-		//outputChannel.subscribe((m)->printPayload(m));
-		//Message<String> message = MessageBuilder.withPayload("Hello word!!!!!").setHeader("key", "value").build();
-
-		//inputChannel.send(message);
-		Message<String> message = MessageBuilder.withPayload("Hello word!!!!!").setHeader("key", "value").build();
-		MessagingTemplate template = new MessagingTemplate();
-		Message<?> returnMessage = template.sendAndReceive(inputChannel, message);
-		System.out.println("After MessagingTemplate");
-		System.out.println(returnMessage.getPayload());
-
-	}
-
-	private Object printPayload(Message<?> m) {
-
-		System.out.println(m.getPayload());
-		return null;
+		for (Future<Message<String>> future : futures) {
+			System.out.println(future.get().getPayload());
+		}
 	}
 }

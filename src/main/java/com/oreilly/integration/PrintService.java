@@ -9,13 +9,15 @@ public class PrintService {
 
 	public Message<String> print(Message<String> message) {
 
-		for (Entry<String, Object> entry : message.getHeaders().entrySet()) {
-			System.out.println("Header entry:  " + entry.getKey() + "="
-					+ entry.getValue());
-		}
-
+//		for (Entry<String, Object> entry : message.getHeaders().entrySet()) {
+//			System.out.println("Header entry:  " + entry.getKey() + "="
+//					+ entry.getValue());
+//		}
+//
 		System.out.println(message.getPayload());
-		return MessageBuilder.withPayload("new Message").build();
+//		return MessageBuilder.withPayload("new Message").build();
+		int messageNumber = (int) message.getHeaders().get("messageNumber");
+		return MessageBuilder.withPayload("Sending a reply for message " + messageNumber).build();
 	}
 
 }
