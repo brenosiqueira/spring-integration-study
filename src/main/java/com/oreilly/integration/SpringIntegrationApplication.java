@@ -23,7 +23,7 @@ public class SpringIntegrationApplication implements ApplicationRunner {
 	}
 
 	@Override
-	public void run(ApplicationArguments arg0) throws Exception {
+	public void run(ApplicationArguments arg0) {
 
 		for (int x = 0; x < 10; x++) {
 			Message<String> message = MessageBuilder.withPayload(
