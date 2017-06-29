@@ -7,19 +7,18 @@
 
 	<int:gateway service-interface="com.oreilly.integration.PrinterGateway"
 		default-request-channel="inputChannel" />
-		
-	<bean id="customComparator" class="com.oreilly.integration.CustomMessageComparator" />
 
 	<int:channel id="inputChannel">
-		<int:priority-queue capacity="10" comparator="customComparator" />
 	</int:channel>
 
-	<bean class="com.oreilly.integration.PrintService" id="printService" />
+	<bean id="printService" class="com.oreilly.integration.PrintService" />
+	<bean id="uppercasePrintService" class="com.oreilly.integration.UppercasePrintService" />
+	
+	<!-- Com dois service-activator, o spring implementa um round robin para consumir as mensagens enviadas pelo inputChannel -->
+	<int:service-activator ref="uppercasePrintService" method="print"
+		input-channel="inputChannel" /><!-- O método do bean  Receive message from input-channel = Recebe a mensagem do Chennel que está definido no atributo input-channel  -->
 
 	<int:service-activator ref="printService" method="print"
-		input-channel="inputChannel">
-		<int:poller fixed-rate="10" time-unit="SECONDS" max-messages-per-poll="2" />
-	</int:service-activator>
-
+		input-channel="inputChannel" />
 
 </beans>
