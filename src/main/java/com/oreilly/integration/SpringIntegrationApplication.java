@@ -11,6 +11,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.integration.IntegrationMessageHeaderAccessor;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 
@@ -29,13 +30,14 @@ public class SpringIntegrationApplication implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments arg0) throws Exception {
 
-		// QueueChannel
 		List<Future<Message<String>>> futures = new ArrayList<>();
 
 		for (int x = 0; x < 10; x++) {
 			Message<String> message = MessageBuilder
 					.withPayload("Printing message payload for " + x)
-					.setHeader("messageNumber", x).build();
+					.setHeader("messageNumber", x)
+					.setHeader(IntegrationMessageHeaderAccessor.PRIORITY, x)
+					.build();
 			System.out.println("Sending message " + x);
 			futures.add(this.gateway.print(message));
 
