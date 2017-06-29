@@ -36,7 +36,7 @@ public class SpringIntegrationApplication implements ApplicationRunner {
 			Message<String> message = MessageBuilder
 					.withPayload("Printing message payload for " + x)
 					.setHeader("messageNumber", x)
-					.setHeader(IntegrationMessageHeaderAccessor.PRIORITY, x)
+					
 					.build();
 			System.out.println("Sending message " + x);
 			futures.add(this.gateway.print(message));
