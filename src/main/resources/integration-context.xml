@@ -9,8 +9,13 @@
 	<int:gateway service-interface="com.oreilly.integration.PrinterGateway"
 		default-request-channel="pollableChannel" />
 
+	<bean id="interceptor" class="com.oreilly.integration.CustomChannelInterceptor" />
+
 	<int:channel id="pollableChannel" >
 		<int:queue capacity="10" />
+		<int:interceptors>
+			<int:ref bean="interceptor"/>
+		</int:interceptors>
 	</int:channel>
 	
 	<int:bridge input-channel="pollableChannel" output-channel="inputChannel">
