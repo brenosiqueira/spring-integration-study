@@ -4,25 +4,17 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd">
 
-
 	<int:gateway service-interface="com.oreilly.integration.PrinterGateway"
 		default-request-channel="inputChannel" />
 
-	<int:channel id="inputChannel">
-		<int:dispatcher failover="false" />
-	</int:channel>
-
-	<bean id="printService" class="com.oreilly.integration.PrintService" />
+	<int:publish-subscribe-channel id="inputChannel"></int:publish-subscribe-channel>
+	
 	<bean id="uppercasePrintService" class="com.oreilly.integration.UppercasePrintService" />
 
-	<!-- Com dois service-activator, o spring implementa um round robin para 
-		consumir as mensagens enviadas pelo inputChannel -->
-	<int:service-activator order="2"
-		ref="uppercasePrintService" method="print" input-channel="inputChannel" /><!-- 
-		O método do bean Receive message from input-channel = Recebe a mensagem do 
-		Chennel que está definido no atributo input-channel -->
+	<bean id="printService" class="com.oreilly.integration.PrintService" />
 
-	<int:service-activator order="1" ref="printService"
-		method="print" input-channel="inputChannel" />
+	<int:service-activator order="2" ref="uppercasePrintService" method="print" input-channel="inputChannel" />
+
+	<int:service-activator order="1" ref="printService" method="print" input-channel="inputChannel" />
 
 </beans>
