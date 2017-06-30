@@ -7,11 +7,19 @@
 		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd">
 
 	<int:gateway service-interface="com.oreilly.integration.PrinterGateway"
-		default-request-channel="inputChannel" />
+		default-request-channel="pollableChannel" />
 
-	<task:executor id="executor" pool-size="5" />
+	<int:channel id="pollableChannel" >
+		<int:queue capacity="10" />
+	</int:channel>
+	
+	<int:bridge input-channel="pollableChannel" output-channel="inputChannel">
+		<int:poller fixed-delay="5" time-unit="SECONDS" max-messages-per-poll="2"></int:poller>
+	</int:bridge>
 
 	<int:publish-subscribe-channel id="inputChannel" task-executor="executor" />
+
+	<task:executor id="executor" pool-size="5" />
 
 	<bean id="uppercasePrintService" class="com.oreilly.integration.UppercasePrintService" />
 
