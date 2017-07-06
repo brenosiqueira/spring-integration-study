@@ -9,27 +9,16 @@
 	<int:gateway service-interface="com.oreilly.integration.PrinterGateway"
 		default-request-channel="inputChannel" />
 
-	<bean name="customRouter" class="com.oreilly.integration.CustomRouter" />
-
-	<int:router ref="customRouter" input-channel="inputChannel" />
-
 	<int:channel id="inputChannel" />
 
-	<int:channel id="defaultChannel" />
+	<int:channel id="outputChannel" />
 
-	<bean id="numericPrintService" class="com.oreilly.integration.NumericPrintService" />
+	<int:filter expression="payload.equals(4)" input-channel="inputChannel"
+		output-channel="outputChannel" />
 
 	<bean id="printService" class="com.oreilly.integration.PrintService" />
 
-	<bean id="defaultService" class="com.oreilly.integration.DefaultService" />
-
-	<int:service-activator ref="defaultService"
-		method="print" input-channel="defaultChannel" />
-
-	<int:service-activator ref="numericPrintService"
-		method="print" input-channel="intChannel" />
-
 	<int:service-activator ref="printService" method="print"
-		input-channel="stringChannel" />
+		input-channel="outputChannel" />
 
 </beans>
