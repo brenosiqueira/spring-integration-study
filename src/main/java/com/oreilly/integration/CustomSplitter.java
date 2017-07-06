@@ -2,15 +2,13 @@ package com.oreilly.integration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.springframework.integration.splitter.AbstractMessageSplitter;
 import org.springframework.messaging.Message;
 
-public class CustomSplitter extends AbstractMessageSplitter {
+public class CustomSplitter {
 
-	@Override
-	protected Object splitMessage(Message<?> message) {
-		
+	public List<String> split(Message<?> message) {
 		return new ArrayList<String>(Arrays.asList(message.getPayload().toString().split(" ")));
 	}
 

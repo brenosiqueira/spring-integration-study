@@ -14,7 +14,7 @@
 	<int:channel id="outputChannel" />
 
 	<bean id="customSplitter" class="com.oreilly.integration.CustomSplitter" />
-	<int:splitter ref="customSplitter" input-channel="inputChannel"
+	<int:splitter ref="customSplitter" method="split" input-channel="inputChannel"
 		output-channel="outputChannel" />
 
 	<bean id="printService" class="com.oreilly.integration.PrintService" />
