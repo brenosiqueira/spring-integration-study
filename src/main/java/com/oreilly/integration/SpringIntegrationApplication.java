@@ -25,8 +25,9 @@ public class SpringIntegrationApplication implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments arg0) {
 
-		for (int x = 0; x < 10; x++) {
-			Message<?> message = MessageBuilder.withPayload("Breno Robson").build();
+		String[] payloads = new String[]{"Breno Robson Gomes Siqueira", "Rocha Andre", "Jose Manuel"};
+		for (int x = 0; x < payloads.length; x++) {
+			Message<?> message = MessageBuilder.withPayload(payloads[x]).build();
 			this.gateway.print(message);
 
 		}
